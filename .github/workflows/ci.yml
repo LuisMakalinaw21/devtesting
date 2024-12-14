@@ -8,38 +8,24 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout the repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up Python (using a specific version)
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
-      # Step 3: Cache Python dependencies (optional but improves speed on subsequent runs)
-      - name: Cache Python dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      # Step 4: Install dependencies from requirements.txt (creating and activating virtual environment)
       - name: Install dependencies
         run: |
-          python -m venv venv  # Create a virtual environment
-          . venv/bin/activate  # Activate the virtual environment
-          pip install -r requirements.txt  # Install dependencies from requirements.txt
+          python -m venv venv
+          . venv/bin/activate
+          pip install -r requirements.txt
 
-      # Step 5: Run tests using pytest with additional debug flags
-      - name: Run Tests
+      - name: Run pytest
         run: |
-          . venv/bin/activate  # Ensure the virtual environment is activated
-          pip install pytest  # Ensure pytest is installed in the virtual environment
-          pytest -v --tb=short  # Run tests with verbose output and short traceback
+          . venv/bin/activate
+          pytest -v --tb=short
 
