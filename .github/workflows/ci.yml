@@ -24,8 +24,13 @@ jobs:
           . venv/bin/activate
           pip install -r requirements.txt
 
-      - name: Run pytest
+      - name: Install black
         run: |
           . venv/bin/activate
-          pytest -v --tb=short
+          pip install black
+
+      - name: Run black
+        run: |
+          . venv/bin/activate
+          black --check .  # Check if the code is formatted correctly
 
