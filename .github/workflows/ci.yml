@@ -32,12 +32,12 @@ jobs:
       - name: Generate requirements file with pipreqs
         run: |
           . venv/bin/activate
-          pipreqs . --force  # Regenerate the requirements file
+          pipreqs . --force  # Regenerate the requirements file in the current directory
 
       - name: Check for unused dependencies
         run: |
           . venv/bin/activate
-          pipreqs --dry-run .  # Check for unused dependencies
+          pipreqs --dry-run .  # Check for unused dependencies in the current directory
 
       - name: Install black
         run: |
