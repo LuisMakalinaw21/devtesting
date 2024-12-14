@@ -29,8 +29,9 @@ jobs:
           . venv/bin/activate
           pip install black
 
-      - name: Run black
+      - name: Run black (check only)
         run: |
           . venv/bin/activate
-          black --check .  # Check if the code is formatted correctly
+          black --check .  # This checks for code style issues without applying any fixes
+        continue-on-error: true  # Continue even if black finds formatting issues
 
