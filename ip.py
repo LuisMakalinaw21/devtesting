@@ -34,25 +34,6 @@ def get_location(ip):
     except Exception as e:
         return {"error": str(e)}
 
-# Function to check if the IP address is within private or reserved ranges
-def is_private_ip(ip):
-    private_ranges = [
-        ("10.0.0.0", "10.255.255.255"),
-        ("172.16.0.0", "172.31.255.255"),
-        ("192.168.0.0", "192.168.255.255")
-    ]
-    ip_parts = list(map(int, ip.split('.')))
-    
-    for start, end in private_ranges:
-        start_parts = list(map(int, start.split('.')))
-        end_parts = list(map(int, end.split('.')))
-        if start_parts[0] <= ip_parts[0] <= end_parts[0]:
-            if start_parts[1] <= ip_parts[1] <= end_parts[1]:
-                if start_parts[2] <= ip_parts[2] <= end_parts[2]:
-                    if start_parts[3] <= ip_parts[3] <= end_parts[3]:
-                        return True
-    return False
-
 # Function to get the current time and date
 def get_current_time():
     now = datetime.now()
@@ -67,33 +48,30 @@ def fetch_ip_data():
     # Get location details for IPv4
     ipv4_location = get_location(ipv4) if "Error" not in ipv4 else {"error": ipv4}
     
-    # Check if IPv4 is private
-    ipv4_status = "Private" if is_private_ip(ipv4) else "Public"
-    
     # Get the current time and date
     current_time = get_current_time()
 
-    # Update the textboxes with the fetched data
-    ipv4_textbox.delete(1.0, tk.END)
-    ipv4_textbox.insert(tk.END, f"IPv4: {ipv4} ({ipv4_status})")
-
-    ipv6_textbox.delete(1.0, tk.END)
-    ipv6_textbox.insert(tk.END, f"IPv6: {ipv6}")
-    
+    # Prepare the text content
     if "error" not in ipv4_location:
-        location_text = f"Location (IPv4): {ipv4_location['city']}, {ipv4_location['region']}, {ipv4_location['country']}"
+        location_text = f"Location (IPv4): {ipv4_location['city']}, {ipv4_location['region']}, {ipv4_location['country']}\n"
     else:
-        location_text = f"Error: {ipv4_location['error']}"
+        location_text = f"Error: {ipv4_location['error']}\n"
 
-    location_textbox.delete(1.0, tk.END)
-    location_textbox.insert(tk.END, location_text)
-    
-    time_textbox.delete(1.0, tk.END)
-    time_textbox.insert(tk.END, f"Time/Date: {current_time}")
+    results = (
+        f"IPv4: {ipv4}\n"
+        f"IPv6: {ipv6}\n"
+        f"{location_text}"
+        f"Time/Date: {current_time}\n"
+    )
 
-# Function to refresh the data
-def refresh_data():
-    fetch_ip_data()
+    # Insert the text into the textbox
+    results_textbox.delete("1.0", tk.END)
+    results_textbox.insert(tk.END, results)
+
+# Function to reset the text box
+def reset_results():
+    results_textbox.delete("1.0", tk.END)
+    results_textbox.insert(tk.END, "Results will appear here...\n")
 
 # Create the GUI window
 root = tk.Tk()
@@ -101,37 +79,33 @@ root.title("IP Address Finder")
 
 # Set the background color of the window
 background_color = "#B1D690"
+header_color = "#6B8E23"  # Darker green for the header
 root.configure(bg=background_color)
 
 # Window size and layout
 root.geometry("500x400")
 root.resizable(False, False)
 
-# Title Label with background color
-header_color = "#4E6E2F"  # Darker color for the header
-title_label = tk.Label(root, text="IP Address and Location Finder", font=("Helvetica", 16, "bold"), bg=header_color, fg="white")
-title_label.pack(fill=tk.X, pady=10)
+# Create a header frame for the title
+header_frame = tk.Frame(root, bg=header_color, height=50)
+header_frame.pack(fill=tk.X)
 
-# Textboxes to display IPv4, IPv6, location, and time with background color
-ipv4_textbox = tk.Text(root, height=2, width=50, font=("Helvetica", 12), bg="white", wrap=tk.WORD)
-ipv4_textbox.pack(pady=5)
+# Title Label inside the header frame
+title_label = tk.Label(header_frame, text="IP Address and Location Finder", font=("Helvetica", 16, "bold"), fg="white", bg=header_color)
+title_label.pack(pady=10)
 
-ipv6_textbox = tk.Text(root, height=2, width=50, font=("Helvetica", 12), bg="white", wrap=tk.WORD)
-ipv6_textbox.pack(pady=5)
+# Textbox to display results
+results_textbox = tk.Text(root, font=("Helvetica", 12), width=60, height=15, wrap=tk.WORD, bg="#F0F0F0")
+results_textbox.pack(pady=10)
+results_textbox.insert(tk.END, "Results will appear here...\n")
 
-location_textbox = tk.Text(root, height=4, width=50, font=("Helvetica", 12), bg="white", wrap=tk.WORD)
-location_textbox.pack(pady=5)
-
-time_textbox = tk.Text(root, height=2, width=50, font=("Helvetica", 12), bg="white", wrap=tk.WORD)
-time_textbox.pack(pady=10)
-
-# Button to fetch and refresh IP data with background color
+# Button to fetch IP addresses
 fetch_button = tk.Button(root, text="Fetch IP Addresses", command=fetch_ip_data, font=("Helvetica", 12), bg="#A9C67A")
-fetch_button.pack(pady=10)
+fetch_button.pack(pady=5)
 
-# Refresh Button to reset and fetch new data
-refresh_button = tk.Button(root, text="Refresh", command=refresh_data, font=("Helvetica", 12), bg="#A9C67A")
-refresh_button.pack(pady=5)
+# Button to reset the text box
+reset_button = tk.Button(root, text="Refresh", command=reset_results, font=("Helvetica", 12), bg="#D9A67A")
+reset_button.pack(pady=5)
 
 # Run the application
 root.mainloop()
