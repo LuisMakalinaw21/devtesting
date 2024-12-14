@@ -17,15 +17,3 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
-
-      - name: List files to check requirements.txt
-        run: |
-          ls -al  # List all files to verify that requirements.txt exists
-
-      - name: Install dependencies
-        run: |
-          pip install -v -r requirements.txt  # Install dependencies with verbose output
-
-      - name: Run Tests
-        run: |
-          pytest  # Run your tests using pytest
