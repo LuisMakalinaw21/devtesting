@@ -24,6 +24,21 @@ jobs:
           . venv/bin/activate
           pip install -r requirements.txt
 
+      - name: Install pipreqs
+        run: |
+          . venv/bin/activate
+          pip install pipreqs
+
+      - name: Generate requirements file with pipreqs
+        run: |
+          . venv/bin/activate
+          pipreqs . --force  # Regenerate the requirements file
+
+      - name: Check for unused dependencies
+        run: |
+          . venv/bin/activate
+          pipreqs --dry-run .  # Check for unused dependencies
+
       - name: Install black
         run: |
           . venv/bin/activate
