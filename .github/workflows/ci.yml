@@ -39,6 +39,7 @@ jobs:
       # Step 5: Run tests using pytest (virtual environment already activated in this step)
       - name: Run Tests
         run: |
-          . venv/bin/activate  # Activate the virtual environment
+          . venv/bin/activate  # Ensure the virtual environment is activated
+          pip install pytest  # Ensure pytest is installed in the virtual environment
           pytest  # Run tests
 
